@@ -10,7 +10,7 @@ class tmdPage {
     public $prevText = '上一页';
     public $nextText = '下一页';
 
-    $skipHtml = '<li><span>...</span></li>';
+    public $skipHtml = '<li><span>...</span></li>';
     
     function __construct($count, $limit=20) {
         
