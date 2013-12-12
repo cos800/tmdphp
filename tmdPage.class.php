@@ -23,12 +23,13 @@ class tmdPage {
     function __construct($count, $limit=20) {
         
     }
+
     function prevPage() {
         $url = $this->url($this->page-1);
         if ($this->page>1) {
             return sprintf($this->prevFmt, $url);
         } else {
-            return sprintf($this->prevFmt2, $url);
+            return $this->prevFmt2;
         }
     }
     function nextPage() {
@@ -36,7 +37,7 @@ class tmdPage {
         if ($this->page<$this->pages) {
             return sprintf($this->nextFmt, $url);
         } else {
-            return sprintf($this->nextFmt2, $url);
+            return $this->nextFmt2;
         }
     }
     // 
