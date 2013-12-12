@@ -7,28 +7,36 @@ class tmdPage {
     public $page;
     public $offset;
 
-    public $prevText = '上一页';
-    public $nextText = '下一页';
+    public $prevFmt = '<li><a href="%s">%s</a></li>';
+    public $prevFmt2 = '<li class="disabled"><span>%s</span></li>';
+    
+    public $nextFmt = '<li><a href="%s">%s</a></li>';
+    public $nextFmt2 = '<li class="disabled"><span>%s</span></li>';
 
-    public $skipHtml = '<li><span>...</span></li>';
+    public $pageFmt = '<li><a href="%s">%s</a></li>';
+    public $pageFmt2 = '<li class="active"><span>%s</span></li>';
+
+    public $firstFmt = '<li><a href="%s">%s</a></li>';
+    public $lastFmt = '<li><a href="%s">%s</a></li>';
+    public $skipFmt = '<li><span>...</span></li>';
     
     function __construct($count, $limit=20) {
         
     }
     function prevPage() {
+        $url = $this->url($this->page-1);
         if ($this->page>1) {
-            $url = $this->url($this->page-1);
-            return sprintf('<li><a href="%s">%s</a></li>', $url, $this->prevText);
+            return sprintf($this->prevFmt, $url);
         } else {
-            return sprintf('<li class="disabled"><span>%s</span></li>', $this->prevText);
+            return sprintf($this->prevFmt2, $url);
         }
     }
     function nextPage() {
+        $url = $this->url($this->page+1);
         if ($this->page<$this->pages) {
-            $url = $this->url($this->page+1);
-            return sprintf('<li><a href="%s">%s</a></li>', $url, $this->nextText);
+            return sprintf($this->nextFmt, $url);
         } else {
-            return sprintf('<li class="disabled"><span>%s</span></li>', $this->nextText);
+            return sprintf($this->nextFmt2, $url);
         }
     }
     // 
@@ -39,9 +47,9 @@ class tmdPage {
         $ret = '';
         for (; $s <= $e; $s++) {
             if ($s==$this->page) {
-                $ret .= sprintf('<li class="active"><span>%s</span></li>', $s);
+                $ret .= sprintf($this->pageFmt2, $s);
             }else{
-                $ret .= sprintf('<li><a href="%s">%s</a></li>', $this->url($s), $s);
+                $ret .= sprintf($this->pageFmt, $this->url($s), $s);
             }
         }
         return $ret;
@@ -72,14 +80,14 @@ class tmdPage {
         }
         $ret = $this->allPage($s, $e);
         if ($s==2) {
-            $ret = sprintf('<li><a href="%s">%s</a></li>', $this->url(1), 1).$ret;
+            $ret = sprintf($this->firstFmt, $this->url(1), 1) . $ret;
         }elseif ($s>2) {
-            $ret = sprintf('<li><a href="%s">%s</a></li><li><span>...</span></li>', $this->url(1), 1).$ret;
+            $ret = sprintf($this->firstFmt, $this->url(1), 1) . $this->skipFmt . $ret;
         }
         if ($e==$this->pages-1) {
-            $ret .= sprintf('<li><a href="%s">%s</a></li>', $this->url($this->pages), $this->pages);
+            $ret .= sprintf($this->lastFmt, $this->url($this->pages), $this->pages);
         }elseif ($e<$this->pages-1) {
-            $ret .= sprintf('<li><a href="%s">%s</a></li>', $this->url($this->pages), $this->pages);
+            $ret .= $this->skipFmt . sprintf($this->lastFmt, $this->url($this->pages), $this->pages);
         }
         return $ret;
     }
