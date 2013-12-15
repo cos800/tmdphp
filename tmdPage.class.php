@@ -3,6 +3,9 @@
 class tmdPage {
     public $count;
     public $limit;
+    public $pageKey;
+    public $urlFmt;
+    
     public $pages;
     public $page;
     public $offset;
@@ -19,9 +22,21 @@ class tmdPage {
     public $firstFmt = '<li><a href="%s">%s</a></li>';
     public $lastFmt = '<li><a href="%s">%s</a></li>';
     public $skipFmt = '<li><span>...</span></li>';
-    
-    function __construct($count, $limit=20) {
-        
+                        
+    function __construct($count, $limit=20, $pageKey='p', $urlFmt=false) {
+        $this->count = $count;
+        $this->limit = $limit;
+        $this->pageKey = $pageKey;
+        $this->pages = max(1, ceil($count/$limit));
+        $this->page = max(1, (int)$_GET[$this->pageKey]);
+        $this->offset = ($this->page-1)*$limit;
+        if ($urlFmt) {
+            $this->urlFmt = $urlFmt;
+        }else{
+            $param = $_GET;
+            $param[$pageKey] = '%s';
+            $this->urlFmt = U('', $param);
+        }
     }
 
     function prevPage() {
@@ -32,6 +47,7 @@ class tmdPage {
             return $this->prevFmt2;
         }
     }
+    
     function nextPage() {
         $url = $this->url($this->page+1);
         if ($this->page<$this->pages) {
@@ -49,7 +65,7 @@ class tmdPage {
         for (; $s <= $e; $s++) {
             if ($s==$this->page) {
                 $ret .= sprintf($this->pageFmt2, $s);
-            }else{
+            } else {
                 $ret .= sprintf($this->pageFmt, $this->url($s), $s);
             }
         }
@@ -82,17 +98,18 @@ class tmdPage {
         $ret = $this->allPage($s, $e);
         if ($s==2) {
             $ret = sprintf($this->firstFmt, $this->url(1), 1) . $ret;
-        }elseif ($s>2) {
+        } elseif ($s>2) {
             $ret = sprintf($this->firstFmt, $this->url(1), 1) . $this->skipFmt . $ret;
         }
         if ($e==$this->pages-1) {
             $ret .= sprintf($this->lastFmt, $this->url($this->pages), $this->pages);
-        }elseif ($e<$this->pages-1) {
+        } elseif ($e<$this->pages-1) {
             $ret .= $this->skipFmt . sprintf($this->lastFmt, $this->url($this->pages), $this->pages);
         }
         return $ret;
     }
+    
     function url($page) {
-        
+        return sprintf($this->urlFmt, $page);
     }
 }
