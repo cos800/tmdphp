@@ -10,11 +10,11 @@ class tmdPage {
     public $page;
     public $offset;
 
-    public $prevFmt = '<li><a href="%s">%s</a></li>';
-    public $prevFmt2 = '<li class="disabled"><span>%s</span></li>';
+    public $prevFmt = '<li><a href="%s">上一页</a></li>';
+    public $prevFmt2 = '<li class="disabled"><span>上一页</span></li>';
     
-    public $nextFmt = '<li><a href="%s">%s</a></li>';
-    public $nextFmt2 = '<li class="disabled"><span>%s</span></li>';
+    public $nextFmt = '<li><a href="%s">下一页</a></li>';
+    public $nextFmt2 = '<li class="disabled"><span>下一页</span></li>';
 
     public $pageFmt = '<li><a href="%s">%s</a></li>';
     public $pageFmt2 = '<li class="active"><span>%s</span></li>';
