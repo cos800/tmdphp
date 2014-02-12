@@ -28,20 +28,20 @@ class tmdPage {
         $this->limit = $limit;
         $this->pageKey = $pageKey;
         $this->pages = max(1, ceil($count/$limit));
-        $this->page = max(1, (int)$_GET[$this->pageKey]);
+        $this->page = max(1, (int)$_GET[$pageKey]);
         $this->offset = ($this->page-1)*$limit;
         if ($urlFmt) {
             $this->urlFmt = $urlFmt;
         }else{
             $param = $_GET;
-            $param[$pageKey] = '%s';
+            $param[$pageKey] = '__PAGE__';
             $this->urlFmt = U('', $param);
         }
     }
 
     function prevPage() {
-        $url = $this->url($this->page-1);
         if ($this->page>1) {
+            $url = $this->url($this->page-1);
             return sprintf($this->prevFmt, $url);
         } else {
             return $this->prevFmt2;
@@ -49,8 +49,8 @@ class tmdPage {
     }
     
     function nextPage() {
-        $url = $this->url($this->page+1);
         if ($this->page<$this->pages) {
+            $url = $this->url($this->page+1);
             return sprintf($this->nextFmt, $url);
         } else {
             return $this->nextFmt2;
@@ -110,6 +110,7 @@ class tmdPage {
     }
     
     function url($page) {
-        return sprintf($this->urlFmt, $page);
+        return str_replace('__PAGE__', $page, $this->urlFmt);
+        //return sprintf($this->urlFmt, $page);
     }
 }
