@@ -1,14 +1,15 @@
 <?php
+namespace TMD;
 
-class tmdPage {
-    public $count;
-    public $limit;
-    public $pageKey;
-    public $urlFmt;
+class Page {
+    public $count; // 总记录数
+    public $limit; // 每页显示记录数
+    public $pageKey; // URL中页数参数名，比如：page
+    public $urlFmt; // 自定义分页URL
     
-    public $pages;
-    public $page;
-    public $offset;
+    public $pages; // 总页数
+    public $page; // 当前页数
+    public $offset; // offset 用于mysql查询 偏移量
 
     public $prevFmt = '<li><a href="%s">上一页</a></li>';
     public $prevFmt2 = '<li class="disabled"><span>上一页</span></li>';
@@ -23,7 +24,7 @@ class tmdPage {
     public $lastFmt = '<li><a href="%s">%s</a></li>';
     public $skipFmt = '<li><span>...</span></li>';
                         
-    function __construct($count, $limit=20, $pageKey='p', $urlFmt=false) {
+    function __construct($count, $limit=20, $urlFmt=false, $pageKey='page') {
         $this->count = $count;
         $this->limit = $limit;
         $this->pageKey = $pageKey;
@@ -33,33 +34,40 @@ class tmdPage {
         if ($urlFmt) {
             $this->urlFmt = $urlFmt;
         }else{
+            // todo
             $param = $_GET;
             $param[$pageKey] = '__PAGE__';
             $this->urlFmt = U('', $param);
         }
     }
-
+    //  上一页
     function prevPage() {
-        if ($this->page>1) {
+        if ($this->page > 1) {
             $url = $this->url($this->page-1);
             return sprintf($this->prevFmt, $url);
         } else {
             return $this->prevFmt2;
         }
     }
-    
+    // 下一页
     function nextPage() {
-        if ($this->page<$this->pages) {
+        if ($this->page < $this->pages) {
             $url = $this->url($this->page+1);
             return sprintf($this->nextFmt, $url);
         } else {
             return $this->nextFmt2;
         }
     }
-    // 
-    function allPage($s=false, $e=false) {
-        if (!$s) $s = 1;
-        if (!$e) $e = $this->pages;
+
+    /**
+     *
+     * @param int $s 开始页数
+     * @param int $e 结束页数
+     * @return string 分页html
+     */
+    function allPage($s=null, $e=null) {
+        if (empty($s)) $s = 1;
+        if (empty($e)) $e = $this->pages;
         
         $ret = '';
         for (; $s <= $e; $s++) {
@@ -71,22 +79,34 @@ class tmdPage {
         }
         return $ret;
     }
-    // like google 
+
+    /**
+     * 像这样显示分页
+     * 6 7 8 9 [10] 11 12 13 14
+     * @param int $n
+     * @return string 分页HTML
+     */
     function goodPage($n=4) {
-        if ($this->pages<=($n*2+1)) { // 总页数小于等于9
+        if ($this->pages <= ($n*2+1) ) { // 总页数小于等于9
             return $this->allPage(); // 显示所有分页
         }
         $s = max(1, $this->page-$n); // 开始页数 = 当前页数 - $n  或是 1
         $e = $s+$n*2; // 计算结束页数
-        if ($e>$this->pages) { // 如果结束页大于总页数
+        if ($e > $this->pages) { // 如果结束页大于总页数
             $e = $this->pages; // 结束页 = 总页数
             $s = $e-$n*2; // 开始页 = 结束页 - $n*2
         }
         return $this->allPage($s, $e);
     }
-    // like github
+
+    /**
+     * 像这样显示分页
+     * 1 ... 7 8 9 [10] 11 12 13 ... 99
+     * @param int $n
+     * @return string 分页HTML
+     */
     function bestPage($n=3) {
-        if ($this->pages<=($n*2+1)) { // 总页数小于等于9
+        if ($this->pages <= ($n*2+1) ) { // 总页数小于等于9
             return $this->allPage(); // 显示所有分页
         }
         $s = max(1, $this->page-$n); // 开始页数 = 当前页数 - $n  或是 1
