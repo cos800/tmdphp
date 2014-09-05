@@ -11,18 +11,18 @@ class Page {
     public $page; // 当前页数
     public $offset; // offset 用于mysql查询 偏移量
 
-    public $prevFmt = '<li><a href="%s">上一页</a></li>';
-    public $prevFmt2 = '<li class="disabled"><span>上一页</span></li>';
+    public $prevFmt = '<li><a href="%s">上一页</a></li>'; // 上一页可点击时的HTML，%s将被替换为链接
+    public $prevFmt2 = '<li class="disabled"><span>上一页</span></li>'; // 上一页不可点击时的HTML
     
-    public $nextFmt = '<li><a href="%s">下一页</a></li>';
-    public $nextFmt2 = '<li class="disabled"><span>下一页</span></li>';
+    public $nextFmt = '<li><a href="%s">下一页</a></li>'; // 下一页可点击时的HTML，%s将被替换为链接
+    public $nextFmt2 = '<li class="disabled"><span>下一页</span></li>'; // 下一页不可点击时的HTML
 
-    public $pageFmt = '<li><a href="%s">%s</a></li>';
-    public $pageFmt2 = '<li class="active"><span>%s</span></li>';
+    public $pageFmt = '<li><a href="%s">%s</a></li>'; // 分页的HTML，第一个%s将被替换为链接，第二个%s将被替换为页数
+    public $pageFmt2 = '<li class="active"><span>%s</span></li>'; // 当时分页的HTML，%s将被替换为页数
 
-    public $firstFmt = '<li><a href="%s">%s</a></li>';
-    public $lastFmt = '<li><a href="%s">%s</a></li>';
-    public $skipFmt = '<li><span>...</span></li>';
+    public $firstFmt = '<li><a href="%s">%s</a></li>'; // 第一页的HTML，第一个%s将被替换为链接，第二个%s将被替换为页数
+    public $lastFmt = '<li><a href="%s">%s</a></li>'; // 最后一页的HTML，第一个%s将被替换为链接，第二个%s将被替换为页数
+    public $skipFmt = '<li><span>...</span></li>'; // 跳过部分的HTML，
                         
     function __construct($count, $limit=20, $urlFmt=false, $pageKey='page') {
         $this->count = $count;
