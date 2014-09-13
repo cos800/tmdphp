@@ -21,7 +21,7 @@ class DB {
     public $options = array(
         \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-        \PDO::ATTR_ORACLE_NULLS => PDO::NULL_TO_STRING,
+        \PDO::ATTR_ORACLE_NULLS => \PDO::NULL_TO_STRING,
     );
 
     public $PDO;
@@ -33,7 +33,7 @@ class DB {
     function __construct($config=array()) {
         if (is_string($config)) {
             $this->dsn = $config;
-        }else{
+        } else {
             foreach ($config as $key=>$val) {
                 isset($this->$key) or trigger_error('Undefined property: '.__CLASS__.'::$'.$key, E_USER_ERROR);
                 $this->$key = $val;
@@ -44,7 +44,6 @@ class DB {
         }
         $this->PDO = new \PDO($this->dsn, $this->username, $this->password, $this->options);
 
-//        $this->PDO->setAttribute()
     }
 
     function query($sql, $args=array()) {
@@ -123,7 +122,7 @@ class DB {
         foreach ($data as $key=>$val) {
             if (is_array($val)) {
                 $val = $val[0];
-            }else{
+            } else {
                 $val = $this->PDO->quote($val);
             }
             $sets[] = "`$key`=" . $val;
@@ -178,7 +177,6 @@ class DB {
         // db2.table
         // db2.table as tbl
         // db2.table tbl
-
     }
 
     function lastSql($ret=false) {
