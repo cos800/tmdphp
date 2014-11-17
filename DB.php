@@ -140,12 +140,32 @@ class DB {
     }
 
     function where($whe, $pre=true) {
-        // todo
-        $sql = '1 ';
+        if(is_string($whe)) {
+            $sql = $whe;
+        }elseif(is_array($whe)) {
+            foreach($whe as $key=>$val) {
+                $key = $this->_whereKeyParse($key); // todo: !!!
+
+            }
+        }
         if ($sql and $pre) {
             $sql = 'WHERE '.$sql;
         }
         return $sql;
+    }
+
+    function _whereKeyParse($key) {
+        list($key, $oper) = explode(':', $key);
+        if(strpos($key, '.')!==false) {
+            list($tbl, $key) = explode('.', $key);
+            $tbl = "`$tbl`.";
+        }else{
+            $tbl = '';
+        }
+        return array(
+            "$tbl`$key`",
+            $oper?:'=',
+        );
     }
 
     function table($table, $prefix=null) {
