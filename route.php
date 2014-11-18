@@ -1,34 +1,30 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 14-11-17
- * Time: 下午3:19
- */
 
 namespace tmd;
 
 
-class route {
-//    public $appDir = 'app';
-//    public $appNs = '\\app';
-//    public $libDir = 'lib';
-//
-//    public $urlNsKey = 'n';
-//    public $urlClassKey = 'c';
-//    public $urlMethodKey = 'm';
-//
-//    public $defNs = 'index';
-//    public $defMethod = 'index';
-//
-//    public $classSuffix = '.php';
+class route
+{
+    static function run()
+    {
+        $ctrObj = static::newClass();
+        $ret = static::callMethod($ctrObj);
 
-    function newClass() {
+        if (is_null($ret)) {
+            return;
+        } elseif (is_array($ret) or is_object($ret)) {
+            echo json_encode($ret);
+        } else { // is_string($ret) or is_int($ret) or is_float($ret) or is_bool($ret)
+            echo $ret;
+        }
+    }
+    static function newClass()
+    {
         // namespace
         if (empty($_GET['n'])) {
             $namespace = 'index';
         }else{
-            preg_match('~^[a-z0-9/]+$~', $_GET['n']) or trigger_error('url:n', E_USER_ERROR);
+            preg_match('~^[a-z0-9/]+$~i', $_GET['n']) or trigger_error('url:n', E_USER_ERROR);
             $namespace = strtr($_GET['n'], '/', '\\');
         }
         // class
@@ -39,19 +35,19 @@ class route {
                 $class = $namespace;
             }
         }else{
-            preg_match('~^[a-z0-9]+$~', $_GET['c']) or trigger_error('url:c', E_USER_ERROR);
+            preg_match('~^[a-z0-9]+$~i', $_GET['c']) or trigger_error('url:c', E_USER_ERROR);
             $class = $_GET['c'];
         }
         $class .= 'Controller';
 
         $classPath = '\\app\\'.$namespace.'\\'.$class;
-        $obj = new $classPath;
+        $ctrObj = new $classPath;
 
-
+        return $ctrObj;
     }
 
-    function callMethod() {
-
+    static function callMethod($ctrObj)
+    {
         if (empty($_GET['m'])) {
             $method = 'index';
             $param = array();
@@ -59,12 +55,33 @@ class route {
             $param = explode('/', $_GET['m']);
             $method = array_shift($param);
 
-            preg_match('~^[a-z0-9_]+$~i', $method) or trigger_error('url:m', E_USER_ERROR);
+            preg_match('~^[a-z0-9]+$~i', $method) or trigger_error('url:m', E_USER_ERROR);
         }
-        // todo:.....
-    }
+        if (input::isPost()){
+            $method .= '_post';
+        }else{
+            $method .= '_get';
+        }
+        $result = call_user_func_array(array($ctrObj, $method), $param);
 
+        return $result;
+    }
+    static function url($method='', $namespace='', $append='')
+    {
+        if (empty($method)) {
+            $method = $_GET['m'];
+        }
+        if (empty($namespace)) {
+            $namespace = $_GET['n'];
+            if (!empty($_GET['c'])) {
+                $namespace .= '&c='.$_GET['c'];
+            }
+        }
+        if (is_array($append)) {
+            $append = http_build_query($append);
+        }
+        $url = "?n=$namespace&m=$method&$append";
+        return $url;
+    }
 }
-$a = '\\tmd\\route';
-$b = new $a;
-var_dump($b);
+

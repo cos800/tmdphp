@@ -4,10 +4,10 @@
  * @todo: where...
  */
 
-namespace TMD;
+namespace tmd;
 
 
-class DB {
+class db {
     public $dsn = '';
 
     public $type = 'mysql';
