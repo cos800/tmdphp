@@ -16,8 +16,32 @@ class output {
     }
     static function redirect($method='', $namespace='', $append='')
     {
-        $url = route::url($method, $namespace, $append);
+        $url = app::url($method, $namespace, $append);
         header("Location: $url");
+        exit;
+    }
+    static function error($msg='', $ext=array())
+    {
+        $ext['ok'] = false;
+        $ext['msg'] = is_scalar($msg) ? $msg : var_export($msg, true);
+        echo json_encode($ext);
+        exit;
+    }
+    static function success($url='', $ext=array())
+    {
+        $ext['ok'] = true;
+        $ext['url'] = $url;
+        echo json_encode($ext);
+        exit;
+    }
+
+    static function dump()
+    {
+        foreach (func_get_args() as $one) {
+            echo '<pre>';
+            var_export($one);
+            echo '</pre>';
+        }
         exit;
     }
 }

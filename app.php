@@ -3,19 +3,20 @@
 namespace tmd;
 
 
-class route
+class app
 {
     static function run()
     {
+        static::sessionStart();
         $ctrObj = static::newClass();
         $ret = static::callMethod($ctrObj);
 
         if (is_null($ret)) {
             return;
-        } elseif (is_array($ret) or is_object($ret)) {
-            echo json_encode($ret);
-        } else { // is_string($ret) or is_int($ret) or is_float($ret) or is_bool($ret)
+        } elseif (is_scalar($ret)) { // 标量 包含了 integer 、 float 、 string 或 boolean 的变量
             echo $ret;
+        } else { // is_array($ret) or is_object($ret)
+            echo json_encode($ret);
         }
     }
     static function newClass()
@@ -66,6 +67,7 @@ class route
 
         return $result;
     }
+
     static function url($method='', $namespace='', $append='')
     {
         if (empty($method)) {
@@ -82,6 +84,19 @@ class route
         }
         $url = "?n=$namespace&m=$method&$append";
         return $url;
+    }
+
+    static function loadLib($name)
+    {
+        static $libs = array();
+        if (!isset($libs[$name])) {
+            $libs[$name] = require "./app/_config/$name.php";
+        }
+        return $libs[$name];
+    }
+    static function sessionStart()
+    {
+        session_start();
     }
 }
 

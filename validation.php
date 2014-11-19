@@ -9,6 +9,7 @@
 namespace tmd;
 
 
-class validation {
+class validation
+{
 
 }

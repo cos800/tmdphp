@@ -16,8 +16,8 @@ class db {
     public $dbname = '';
     public $charset = 'utf8';
 
-    public $username = '';
-    public $password = '';
+    public $user = '';
+    public $pwd = '';
     public $options = array(
         \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
@@ -42,7 +42,7 @@ class db {
                 $this->dsn = "{$this->type}:host={$this->host};port={$this->port};dbname={$this->dbname};charset={$this->charset}";
             }
         }
-        $this->PDO = new \PDO($this->dsn, $this->username, $this->password, $this->options);
+        $this->PDO = new \PDO($this->dsn, $this->user, $this->pwd, $this->options);
 
     }
 
@@ -72,7 +72,7 @@ class db {
             if (in_array($name, array('getone','getval'))) {
                 $args[0] .= ' LIMIT 1';
             }
-
+//            var_export($args);die;
             $stmt = call_user_func_array(array($this,'query'), $args);
 
             switch ($name) {
@@ -169,7 +169,7 @@ class db {
     }
 
     function table($table, $prefix=null) {
-        if (is_null($prefix)) {
+        if (is_null($prefix)) { // 使用默认表前缀
             $prefix = $this->prefix;
         }
         if (strpos($table, '.')) { // 如果有点 说明是跨库的表
@@ -206,30 +206,3 @@ class db {
     }
 }
 
-$config = array(
-    'username' => 'root',
-    'password' => 'root',
-    'dbname' => 'fjly',
-);
-$DB = new DB($config);
-
-//$all = $DB->getAll("select * from fy_user limit 5");
-//var_export($all);
-
-//$one = $DB->getOne("select * from fy_user where id=1");
-//var_export($one);
-
-//$cnt = $DB->getVal("select count(*) from fy_user");
-//var_export($cnt);
-
-//$all = $DB->getArr1("SELECT `user` FROM `fy_user` LIMIT 5");
-//var_export($all);
-
-//$all = $DB->getArr2("SELECT `id`, `title` FROM `fy_article` LIMIT 5");
-//var_export($all);
-
-//$all = $DB->getArr3("SELECT id,user,email,avatar,mobile from fy_user limit 5");
-//var_export($all);
-
-$DB->test('a', 'b', 'c', 'd', 'e');
-$DB->test('a', array('b', 'c', 'd', 'e'));
