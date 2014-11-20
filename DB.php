@@ -129,6 +129,7 @@ class db {
         }
         $sets = implode(',', $sets);
         $table = $this->table($table);
+
         $sql = "UPDATE $table SET $sets " . $this->where($whe);
         return $makeSql ? $sql : $this->exec($sql.'LIMIT 1');
     }
@@ -139,33 +140,49 @@ class db {
         return $makeSql ? $sql : $this->exec($sql.'LIMIT 1');
     }
 
-    function where($whe, $pre=true) {
+    function where($whe, $pre='WHERE ') {
         if(is_string($whe)) {
             $sql = $whe;
         }elseif(is_array($whe)) {
-            foreach($whe as $key=>$val) {
-                $key = $this->_whereKeyParse($key); // todo: !!!
-
+            if (isset($whe['||'])) { // 判断条件之间的关系
+                $logic = ' OR ';
+                unset($whe['||']);
+            }else{
+                $logic = ' AND ';
             }
+
+            $sql = array();
+            foreach($whe as $key=>$val) {
+                if (is_int($key)) { // 子条件
+                    $sql[] = '(' . $this->where($val, '') . ')';
+                    continue;
+                }
+
+                if (!strpos($key, ':')) { // 默认为 = 比较
+                    $val = $this->PDO->quote($val);
+                    $sql[] = "$key=$val";
+                    continue;
+                }
+
+                // 其他比较
+                $sql[] = $this->_whereParse($key, $val);
+            }
+            $sql = implode($logic, $sql);
         }
-        if ($sql and $pre) {
-            $sql = 'WHERE '.$sql;
-        }
-        return $sql;
+
+        return $pre.$sql;
     }
 
-    function _whereKeyParse($key) {
+    function _whereParse($key, $val) {
         list($key, $oper) = explode(':', $key);
-        if(strpos($key, '.')!==false) {
-            list($tbl, $key) = explode('.', $key);
-            $tbl = "`$tbl`.";
+        $oper = strtoupper(trim($oper));
+        if (is_array($val)) {
+            $val = array_map(array($this->PDO, 'quote'), $val);
+            $val = '('.implode(',',$val).')';
         }else{
-            $tbl = '';
+            $val = $this->PDO->quote($val);
         }
-        return array(
-            "$tbl`$key`",
-            $oper?:'=',
-        );
+        return "$key $oper $val";
     }
 
     function table($table, $prefix=null) {
@@ -176,7 +193,7 @@ class db {
             $tmp = explode('.', $table);
             $db = '`'.trim($tmp[0]).'`.';
             $table = trim(array_pop($tmp));
-        }else{
+        } else {
             $db = '';
             $table = trim($table);
         }
@@ -185,7 +202,7 @@ class db {
             $tmp = explode(' ', $table);
             $table = $tmp[0];
             $as = ' AS `'. array_pop($tmp) .'`';
-        }else{
+        } else {
             $as = '';
         }
         return "$db`$prefix$table`$as";

@@ -107,23 +107,17 @@ ThinkPHP 的 `where` 写法是：
 -----
 
     [
-        'id:<' => '12', // `id` > '12'
-        'id:<' => '123', // `id` < '123'
-        'id[>=]' => '23', // `id` >= '23'
-        'id[<=]' => '234', // `id` <= '234'
-        'id[!=]' => '44', // `id` != '44'
-        'id[<>]' => '4', // `id` <> '4'
-        'id[in]' => '1,12,123,1234', // `id` IN ('1','12','123','1234')
-        'id[in]' => array(1,12,123,1234), // `id` IN ('1','12','123','1234')
-        'id[not in]' => array(1,12,123,1234), // `id` NOT IN ('1','12','123','1234')
-        'name[like]' => '%tmdphp%'; // `name` LIKE '%tmdphp%'
-        'count(*)[>]' => '123', // count(*) > 123
+        'id: <' => '12', // `id` > '12'
+        'id: <' => '123', // `id` < '123'
+        'id: >=' => '23', // `id` >= '23'
+        'id: <=' => '234', // `id` <= '234'
+        'id: !=' => '44', // `id` != '44'
+        'id: <>' => '4', // `id` <> '4'
+        'id: in' => '1,12,123,1234', // `id` IN ('1','12','123','1234')
+        'id: in' => array(1,12,123,1234), // `id` IN ('1','12','123','1234')
+        'id: not in' => array(1,12,123,1234), // `id` NOT IN ('1','12','123','1234')
+        'name: like' => '%tmdphp%'; // `name` LIKE '%tmdphp%'
 
-        // 支持原始SQL语句
-        'name[is]' => array('NULL'), // `name` IS NULL
-        'name[not]' => array('NULL'), // `name` NOT NULL
-        'lastlogin' => array('`lastpost`'), // `lastlogin` = `lastpost` // 注意lastpost不是字符串 是字段
-        'logins[>]' => array('`posts`*2'), // `logins` > `posts`*2 // 登录次数是帖子数的2倍以上
 
         // 更原始的SQL语句
         "find_in_set(`tags`, 'tmdphp')", // 注意这个值 没有键名
@@ -131,16 +125,16 @@ ThinkPHP 的 `where` 写法是：
 
         // 支持无限级子条件
         array( // 子条件 也不要指定键名。
-            'title[like]' => '%tmdphp%',
-            'intro[like]' => '%tmdphp%',
-            '#OR' => true,
+            'title: like' => '%tmdphp%',
+            'intro: like' => '%tmdphp%',
+            '||' => 1,
             array(
                 // ...
             ),
         ),
 
         // 支持指定表
-        'tb.field[>=]' => 123, // `tb`.`field` >= '123'
+        'tb.field: >=' => 123, // tb.field >= '123'
 
 
     ]

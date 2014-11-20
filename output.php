@@ -39,8 +39,12 @@ class output {
     {
         foreach (func_get_args() as $one) {
             echo '<pre>';
-            var_export($one);
-            echo '</pre>';
+            if (is_scalar($one)) {
+                echo htmlspecialchars($one);
+            } else {
+                var_export($one);
+            }
+            echo "</pre>\n";
         }
         exit;
     }
