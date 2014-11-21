@@ -50,6 +50,7 @@ class db {
         if (func_num_args()>2) {
             $args = array_slice(func_get_args(), 1);
         }
+
         if (!$args) {
             $stmt = $this->PDO->query($sql);
         }else{
@@ -61,7 +62,6 @@ class db {
         }
         return $stmt;
     }
-
 
     function __call($name, $args) {
         $name = strtolower($name);
@@ -90,7 +90,6 @@ class db {
                     return $stmt->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
             }
         }
-
 //        if (method_exists($this->PDO, $name)) {
             return call_user_func_array($this->PDO, $name);
 //        }
@@ -103,7 +102,6 @@ class db {
         }
         return $this->PDO->exec($sql);
     }
-
 
     function insert($table, $data, $makeSql=false) {
         $keys = implode('`,`', array_keys($data));
@@ -141,7 +139,9 @@ class db {
     }
 
     function where($whe, $pre='WHERE ') {
-        if(is_string($whe)) {
+        if (empty($whe)) {
+            return '';
+        } elseif (is_string($whe)) {
             $sql = $whe;
         }elseif(is_array($whe)) {
             if (isset($whe['||'])) { // 判断条件之间的关系
@@ -221,5 +221,6 @@ class db {
         $sql = $this->sqls[$i];
         echo htmlspecialchars($sql);
     }
+
 }
 

@@ -8,6 +8,8 @@ class app
     static function run()
     {
         static::sessionStart();
+        static::loadLib('_common');
+
         $ctrObj = static::newClass();
         $ret = static::callMethod($ctrObj);
 
