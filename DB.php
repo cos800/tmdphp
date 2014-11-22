@@ -177,6 +177,7 @@ class db {
         list($key, $oper) = explode(':', $key);
         $oper = strtoupper(trim($oper));
         if (is_array($val)) {
+            if (empty($val)) return '0';
             $val = array_map(array($this->PDO, 'quote'), $val);
             $val = '('.implode(',',$val).')';
         }else{
