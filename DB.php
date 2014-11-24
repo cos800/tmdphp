@@ -91,7 +91,7 @@ class db {
             }
         }
 //        if (method_exists($this->PDO, $name)) {
-            return call_user_func_array($this->PDO, $name);
+            return call_user_func_array(array($this->PDO, $name), $args);
 //        }
 
     }
