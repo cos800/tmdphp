@@ -3,10 +3,10 @@ namespace tmd;
 
 class curl {
 
-//    private static $error = '';
+    static $error = '';
 
     static function request($url, $get=array(), $post=array()) {
-//        self::$error = '';
+        self::$error = '';
 
         if ($get) {
             $url .= strpos($url, '?') ? '&' : '?';
@@ -22,12 +22,13 @@ class curl {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // 返回内容 而不是直接输出
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // 支持跳转
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 支持https
+        curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); // 设置 User-Agent
 
         $rst = curl_exec($ch);
         if ($rst===false) {
-            $err = curl_error($ch);
+            self::$error = curl_error($ch);
             curl_close($ch);
-            trigger_error('curl:'.$err, E_USER_ERROR);
+            return false;
         }
         curl_close($ch);
         return $rst;
