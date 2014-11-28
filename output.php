@@ -14,12 +14,17 @@ class output {
     {
         
     }
-    static function redirect($method='', $namespace='', $append='')
+
+    static function redirect($url, $time=0, $msg='')
     {
-        $url = app::url($method, $namespace, $append);
-        header("Location: $url");
-        exit;
+        if (headers_sent()) {
+            echo "<meta http-equiv=\"refresh\" content=\"$time; url=$url\" />";
+        } else {
+            header("refresh:$time;url=$url");
+        }
+        exit($msg);
     }
+
     static function error($msg='', $ext=array())
     {
         $ext['ok'] = false;
@@ -46,6 +51,6 @@ class output {
             }
             echo "</pre>\n";
         }
-        exit;
+//        exit;
     }
 }
