@@ -7,6 +7,7 @@ class app
 {
     static function run()
     {
+        date_default_timezone_set('PRC');
         static::sessionStart();
         static::loadLib('_common');
 

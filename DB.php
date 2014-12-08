@@ -129,7 +129,7 @@ class db {
         $table = $this->table($table);
 
         $sql = "UPDATE $table SET $sets " . $this->where($whe);
-        return $makeSql ? $sql : $this->exec($sql.'LIMIT 1');
+        return $makeSql ? $sql : $this->exec($sql.' LIMIT 1');
     }
 
     function delete($table, $whe, $makeSql=false) {
