@@ -4,13 +4,6 @@ namespace tmd;
 
 class input
 {
-    static function get($key) {
-        return isset($_GET[$key]) ? $_GET[$key] : '';
-    }
-
-    static function post() {
-
-    }
 
     static function val($key)
     {
