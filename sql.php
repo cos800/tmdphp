@@ -4,6 +4,11 @@ namespace tmd;
 
 class sql
 {
+    function table()
+    {
+
+    }
+
     function where()
     {
 

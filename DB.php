@@ -135,7 +135,7 @@ class db {
     function delete($table, $whe, $makeSql=false) {
         $table = $this->table($table);
         $sql = "DELETE FROM $table " . $this->where($whe);
-        return $makeSql ? $sql : $this->exec($sql.'LIMIT 1');
+        return $makeSql ? $sql : $this->exec($sql.' LIMIT 1');
     }
 
     function where($whe, $pre='WHERE ') {
