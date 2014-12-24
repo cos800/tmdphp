@@ -8,11 +8,10 @@ class upload {
     public $maxSize = 1048576;
 
     public $rootPath = './upload';
-
     public $savePath = '';
     public $saveName = '';
 
-    public $error = '';
+    public $isMany = false;
 
     public $errMsg = array(
         UPLOAD_ERR_INI_SIZE => '文件大小超出服务器限制',
@@ -31,29 +30,24 @@ class upload {
         }
     }
 
-    function one($key)
+    function one($file)
     {
-        if (empty($_FILES[$key])) {
-            $this->error = '表单缺少文件选择控件';
-            return false;
-        }
-
-        $file = $_FILES[$key];
-
         if ($file['error']!==UPLOAD_ERR_OK) { // 有错误
-            $this->error = $this->errMsg[ $file['error'] ];
-            return false;
+            $file['error_msg'] = $this->errMsg[ $file['error'] ];
+            return $file;
         }
+
         // 后缀名检查
-        $ext = self::getExtName($file['name']);
+        $ext = $file['ext'] = self::getExtName($file['name']);
         if (!in_array($ext, $this->allExt)) {
-            $this->error = '文件后缀名不被允许';
-            return false;
+            $file['error_msg'] = '文件后缀名不被允许';
+            return $file;
         }
+
         // 文件大小检查
         if ($this->maxSize >= 0 and $file['size'] > $this->maxSize) {
-            $this->error = '文件大小超出限制';
-            return false;
+            $file['error_msg'] = '文件大小超出限制';
+            return $file;
         }
 
         // 保存目录
@@ -69,31 +63,64 @@ class upload {
         }else{
             $saveName = $this->saveName;
         }
+
         // 创建目录
         $tmp = $this->rootPath.'/'.$savePath;
         if (!is_dir($tmp)) {
             mkdir($tmp, 0777, true);
         }
+
         // 绝对路径
-        $fullPath = $this->rootPath.'/'.$savePath.'/'.$saveName.'.'.$ext;
+        $file['path_abs'] = $this->rootPath.'/'.$savePath.'/'.$saveName.'.'.$ext;
         // 移动文件
-        if (!move_uploaded_file($file['tmp_name'], $fullPath)) {
-            $this->error = '服务器错误(文件移动失败)';
-            return false;
+        if (!move_uploaded_file($file['tmp_name'], $file['path_abs'])) {
+            $file['error_msg'] = '服务器错误(文件移动失败)';
+            return $file;
         }
-        // 返回相对路径
-        return $savePath.'/'.$saveName.'.'.$ext;
+
+        // 相对路径
+        $file['path_rel'] = $savePath.'/'.$saveName.'.'.$ext;
+        return $file;
     }
 
-    function many($key)
+    function run($key)
     {
+        if (empty($_FILES[$key])) {
+            $this->isMany = false;
+            return array(
+                'error_msg' => '表单字段名错误',
+            );
+        }
 
+        $files = $_FILES[$key];
+
+        if (is_array($files['name'])) {
+            $this->isMany = true;
+
+            $ret = array();
+            foreach ($files['name'] as $k=>$v) {
+                $file = array(
+                    'name' => $files['name'][$k],
+                    'type' => $files['type'][$k],
+                    'tmp_name' => $files['tmp_name'][$k],
+                    'error' => $files['error'][$k],
+                    'size' => $files['size'][$k],
+                );
+                $ret[] = $this->one($file);
+            }
+            return $ret;
+        }else{
+            $this->isMany = false;
+
+            return $this->one($files);
+        }
     }
 
     static function getExtName($file)
     {
         return strtolower(pathinfo($file, PATHINFO_EXTENSION));
     }
+
     static function getMaxSize()
     {
         $size = min(ini_get('upload_max_filesize'), ini_get('post_max_size'));
