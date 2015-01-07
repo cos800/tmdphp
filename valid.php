@@ -15,8 +15,15 @@ class valid
     {
         $ext = self::getExtName($filename);
         if (!is_array($allowExt)) {
-            $allowExt = arr::explode($allowExt);
+            $allowExt = arr::explode(strtolower($allowExt));
         }
-        return in_array($ext, $allowExt);
+        return in_array($ext, $allowExt) ? $ext : false;
     }
+
+    static function posInt($val)
+    {
+        return preg_match('/^[1-9]\d*$/', $val) ? $val : false;
+    }
+
+
 }
