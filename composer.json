@@ -1,0 +1,7 @@
+{
+    "name": "tmdphp/tmdphp",
+    "require": {
+        "catfan/medoo": "0.9.7",
+        "filp/whoops": "1.1.3"
+    }
+}
