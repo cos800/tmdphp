@@ -1,6 +1,9 @@
 {
     "name": "cos800/tmdphp",
+    "type": "framework",
     "description": "tmd php framework",
+    "keywords": ["lightweight", "PHP framework"],
+    "homepage": "http://www.tmdphp.com",
     "license": "GPL",
     "authors": [
         {
@@ -9,5 +12,10 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "tmd\\": "tmd/"
+        }
+    }
 }
