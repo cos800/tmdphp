@@ -20,9 +20,10 @@ class curl {
         }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // 返回内容 而不是直接输出
-        //curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // 支持跳转
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 支持https
-        curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); // 设置 User-Agent
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 支持 https
+        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1); // 支持 微信
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // 支持 跳转
+//        curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); // 设置 User-Agent
 
         $rst = curl_exec($ch);
         if ($rst===false) {
@@ -40,15 +41,15 @@ class curl {
 
     static function requestJson($url, $get=array(), $post=array()) {
         $rst = self::request($url, $get, $post);
-//        if ($rst===false) {
-//            return false;
-//        }
+        if ($rst===false) {
+            return false;
+        }
 
         $json = json_decode($rst, true);
-//        if (is_null($json)) {
-//            self::$error = 'JSON Decode Error: '.$rst;
-//            return false;
-//        }
+        if (is_null($json)) {
+            self::$error = 'JSON Decode Error: '.$rst;
+            return false;
+        }
         return $json;
     }
 }
