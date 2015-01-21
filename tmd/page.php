@@ -24,38 +24,38 @@ class page {
     public $lastFmt = '<li><a href="%s">%s</a></li>'; // 最后一页的HTML，第一个%s将被替换为链接，第二个%s将被替换为页数
     public $skipFmt = '<li><span>...</span></li>'; // 跳过部分的HTML，
 
-    function __construct($count, $limit=20, $urlFmt=false, $pageKey='page') {
+    function __construct($count, $limit=20, $pageKey='page', $urlFmt=false) {
         $this->count = $count;
         $this->limit = $limit;
         $this->pageKey = $pageKey;
+
         $this->pages = max(1, ceil($count/$limit));
         $this->page = max(1, (int)@$_GET[$pageKey]);
         $this->offset = ($this->page-1)*$limit;
+
         if ($urlFmt) {
             $this->urlFmt = $urlFmt;
         } else {
             $param = $_GET;
-            $param[$pageKey] = '__PAGE__';
-            if (defined('THINK_PATH')) { // 如果是ThinkPHP框架
-                $this->urlFmt = U('', $param);
-            }else{
-                $this->urlFmt = $_SERVER['PHP_SELF'].'?'.http_build_query($param);
-            }
+            $param[$pageKey] = '%s';
+            $this->urlFmt = $_SERVER['PHP_SELF'].'?'.urldecode(http_build_query($param));
         }
     }
+
     //  上一页
     function prevPage() {
         if ($this->page > 1) {
-            $url = $this->url($this->page-1);
+            $url = sprintf($this->urlFmt, $this->page-1);
             return sprintf($this->prevFmt, $url);
         } else {
             return $this->prevFmt2;
         }
     }
+
     // 下一页
     function nextPage() {
         if ($this->page < $this->pages) {
-            $url = $this->url($this->page+1);
+            $url = sprintf($this->urlFmt, $this->page+1);
             return sprintf($this->nextFmt, $url);
         } else {
             return $this->nextFmt2;
@@ -77,7 +77,8 @@ class page {
             if ($s==$this->page) {
                 $ret .= sprintf($this->pageFmt2, $s);
             } else {
-                $ret .= sprintf($this->pageFmt, $this->url($s), $s);
+                $url = sprintf($this->urlFmt, $s);
+                $ret .= sprintf($this->pageFmt, $url, $s);
             }
         }
         return $ret;
@@ -93,6 +94,7 @@ class page {
         if ($this->pages <= ($n*2+1) ) { // 总页数小于等于9
             return $this->allPage(); // 显示所有分页
         }
+
         $s = max(1, $this->page-$n); // 开始页数 = 当前页数 - $n  或是 1
         $e = $s+$n*2; // 计算结束页数
         if ($e > $this->pages) { // 如果结束页大于总页数
@@ -112,6 +114,7 @@ class page {
         if ($this->pages <= (($n+2)*2+1) ) {
             return $this->allPage(); // 显示所有分页
         }
+
         $s = max(1, $this->page-$n); // 开始页数 = 当前页数 - $n  或是 1
         $e = $s+$n*2; // 计算结束页数
         if ($e > $this->pages) { // 如果结束页大于总页数
@@ -120,21 +123,20 @@ class page {
         }
         $ret = $this->allPage($s, $e);
 
+        $url = sprintf($this->urlFmt, 1);
         if ($s==2) { // 从第二页开始的
-            $ret = sprintf($this->firstFmt, $this->url(1), 1) . $ret; // 加上第一页链接
+            $ret = sprintf($this->firstFmt, $url, 1) . $ret; // 加上第一页链接
         } elseif ($s>2) {
-            $ret = sprintf($this->firstFmt, $this->url(1), 1) . $this->skipFmt . $ret; // 加上第一页链接和省略号
+            $ret = sprintf($this->firstFmt, $url, 1) . $this->skipFmt . $ret; // 加上第一页链接和省略号
         }
+
+        $url = sprintf($this->urlFmt, $this->pages);
         if ($e == $this->pages-1) { // 结束在倒数第二页
-            $ret .= sprintf($this->lastFmt, $this->url($this->pages), $this->pages); // 直接加上最后一页链接
+            $ret .= sprintf($this->lastFmt, $url, $this->pages); // 直接加上最后一页链接
         } elseif ($e < $this->pages-1) { // 结束在倒数第二页之前
-            $ret .= $this->skipFmt . sprintf($this->lastFmt, $this->url($this->pages), $this->pages); // 加上省略号和最后一页链接
+            $ret .= $this->skipFmt . sprintf($this->lastFmt, $url, $this->pages); // 加上省略号和最后一页链接
         }
         return $ret;
     }
-    
-    function url($page) {
-        return str_replace('__PAGE__', $page, $this->urlFmt);
-//        return sprintf($this->urlFmt, $page);
-    }
+
 }

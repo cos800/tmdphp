@@ -1,7 +1,7 @@
 <?php
-namespace TMD;
+require '../tmd/page.php';
 
-require '../Autoload.php';
+use tmd\page as page;
 
 $thisUrl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']
 
@@ -10,7 +10,7 @@ $thisUrl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>page demo</title>
     <link rel="stylesheet" href="http://cdn.staticfile.org/twitter-bootstrap/3.2.0/css/bootstrap.min.css"/>
     <script src="http://cdn.staticfile.org/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
@@ -32,7 +32,7 @@ $thisUrl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']
             <div class="col-md-4">
                 <?php
                 for($cnt=100; $cnt<=300; $cnt+=20) {
-                    $page = new Page($cnt);
+                    $page = new page($cnt);
                 ?>
                     <ul class="pagination">
                         <?php
@@ -46,7 +46,7 @@ $thisUrl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']
                 <?php for($cnt=100; $cnt<=300; $cnt+=20) { ?>
                     <ul class="pagination">
                         <?php
-                        $page = new Page($cnt);
+                        $page = new page($cnt);
                         echo $page->goodPage();
                         ?>
                     </ul>
@@ -56,7 +56,7 @@ $thisUrl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']
             <div class="col-md-4">
                 <ul class="pager">
                     <?php
-                    $page = new Page(100);
+                    $page = new page(100);
                     echo $page->prevPage();
                     echo $page->nextPage();
                     ?>
@@ -64,7 +64,7 @@ $thisUrl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']
                 <br/>
                 <ul class="pager">
                     <?php
-                    $page = new Page(100);
+                    $page = new page(100);
                     $page->prevFmt = '<li class="previous"><a href="%s">上一页</a></li>';
                     $page->prevFmt2 = '<li class="previous disabled"><a href="#">上一页</a></li>';
 
@@ -77,7 +77,7 @@ $thisUrl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']
                 <br/>
                 <ul class="pagination">
                     <?php
-                    $page = new Page(425);
+                    $page = new page(425);
                     echo $page->allPage();
                     ?>
                 </ul>
