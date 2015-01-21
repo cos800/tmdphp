@@ -1,7 +1,7 @@
 <?php
-namespace TMD;
+namespace tmd;
 
-class Page {
+class page {
     public $count; // 总记录数
     public $limit; // 每页显示记录数
     public $pageKey; // URL中页数参数名，比如：page
@@ -23,7 +23,7 @@ class Page {
     public $firstFmt = '<li><a href="%s">%s</a></li>'; // 第一页的HTML，第一个%s将被替换为链接，第二个%s将被替换为页数
     public $lastFmt = '<li><a href="%s">%s</a></li>'; // 最后一页的HTML，第一个%s将被替换为链接，第二个%s将被替换为页数
     public $skipFmt = '<li><span>...</span></li>'; // 跳过部分的HTML，
-                        
+
     function __construct($count, $limit=20, $urlFmt=false, $pageKey='page') {
         $this->count = $count;
         $this->limit = $limit;
