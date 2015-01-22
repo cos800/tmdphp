@@ -42,7 +42,8 @@ class valid
     
     static function email($val)
     {
-        return preg_match('/^[a-z0-9_.]{1,20}@([a-z0-9\-]{1,10}\.){1,2}[a-z]{2-7}$/', $val) ? $val : false;
+//        return preg_match('/^[a-z0-9_.]{1,20}@([a-z0-9\-]{1,10}\.){1,2}[a-z]{2-7}$/', $val) ? $val : false;
+        return filter_var($val, FILTER_VALIDATE_EMAIL);
     }
 
     static function tel($val)
@@ -63,6 +64,7 @@ class valid
     static function url($val)
     {
         return preg_match('/^https?:\/\/[^\s]{4,}$/i', $val) ? $val : false;
+//        return filter_var($val, FILTER_VALIDATE_URL);
     }
 
     static function qq($val)
@@ -70,9 +72,9 @@ class valid
         return preg_match('/^[1-9]\d{4,9}$/', $val) ? $val : false;
     }
 
-    static function ip($val)
-    {
-        return preg_match('/^([1-9]\d{0,2}\.){3}[1-9]\d{0,2}$/', $val) ? $val : false;
-    }
+//    static function ip($val)
+//    {
+//        return preg_match('/^([1-9]\d{0,2}\.){3}[1-9]\d{0,2}$/', $val) ? $val : false;
+//    }
 
 }

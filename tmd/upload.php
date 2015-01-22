@@ -38,7 +38,7 @@ class upload {
         }
 
         // 后缀名检查
-        $ext = $file['ext'] = self::getExtName($file['name']);
+        $ext = $file['ext'] = self::getFileExt($file['name']);
         if (!in_array($ext, $this->allExt)) {
             $file['error_msg'] = '文件后缀名不被允许';
             return $file;
@@ -116,23 +116,9 @@ class upload {
         }
     }
 
-    static function getExtName($file)
+    static function getFileExt($file)
     {
         return strtolower(pathinfo($file, PATHINFO_EXTENSION));
     }
 
-    static function getMaxSize()
-    {
-        $size = min(ini_get('upload_max_filesize'), ini_get('post_max_size'));
-        if (stripos($size, 'm')) {
-            return $size*1048576;
-        }
-        if (stripos($size, 'g')) {
-            return $size*1073741824;
-        }
-        if (stripos($size, 'k')) {
-            return $size*1024;
-        }
-        return intval($size);
-    }
 }
