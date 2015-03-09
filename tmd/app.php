@@ -9,7 +9,7 @@ class app
     {
         date_default_timezone_set('PRC');
         static::sessionStart();
-        static::loadLib('_common');
+//        static::loadLib('_common');
 
         $ctrObj = static::newClass();
         $ret = static::callMethod($ctrObj);
