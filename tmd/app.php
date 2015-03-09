@@ -71,22 +71,37 @@ class app
         return $result;
     }
 
-    static function url($method='', $namespace='', $append='')
+    static function url($method=NULL, $namespace=NULL, $append=NULL)
     {
-        if (empty($method)) {
-            $method = $_GET['m'];
-        }
-        if (empty($namespace)) {
-            $namespace = $_GET['n'];
-            if (!empty($_GET['c'])) {
-                $namespace .= '&c='.$_GET['c'];
+        $url = '?';
+
+        if (is_null($namespace)) { // NULL 默认 当前
+            if (!empty($_GET['n'])) {
+                $url .= "n=$_GET[n]&";
             }
+            if (!empty($_GET['c'])) {
+                $url .= "c=$_GET[c]&";
+            }
+        } elseif (!empty($namespace)) {
+            $url .= "n=$namespace&";
         }
-        if (is_array($append)) {
-            $append = http_build_query($append);
+
+        if (is_null($method)) { // NULL 默认 当前
+            if (!empty($_GET['m'])) {
+                $url .= "m=$_GET[m]&";
+            }
+        } elseif (!empty($method)) {
+            $url .= "m=$method&";
         }
-        $url = "?n=$namespace&m=$method&$append";
-        return $url;
+
+        if (!empty($append)) {
+            if (is_array($append)) {
+                $append = http_build_query($append);
+            }
+            $url .= $append.'&';
+        }
+
+        return substr($url, 0, -1);
     }
 
     static function loadLib($name)
