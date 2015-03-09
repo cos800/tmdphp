@@ -1,4 +1,4 @@
 <?php
 
-echo '<pre>';
+echo '<asd>';
 var_export($_SERVER);
