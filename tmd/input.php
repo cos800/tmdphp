@@ -10,12 +10,14 @@ class input
         return isset($_POST[$key]) ? $_POST[$key] : (isset($_GET[$key]) ? $_GET[$key] : '');
     }
 
-    static function str($key, $textarea=false)
+    static function str($key)
     {
-        if ($textarea) {
-            return nl2br(htmlspecialchars(rtrim(static::val($key))));
-        }
         return htmlspecialchars(trim(static::val($key)));
+    }
+
+    static function txt($key)
+    {
+        return nl2br(htmlspecialchars(rtrim(static::val($key))));
     }
 
     static function int($key)
