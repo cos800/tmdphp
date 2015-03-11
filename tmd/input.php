@@ -18,6 +18,12 @@ class input
         return htmlspecialchars(trim(static::val($key)));
     }
 
+    static function int($key)
+    {
+        $val = (int)static::val($key);
+        return max(0, $val);
+    }
+
     static function isAjax()
     {
         return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) and strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])==='xmlhttprequest');
