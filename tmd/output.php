@@ -74,7 +74,7 @@ class output {
     {
         foreach (func_get_args() as $one) {
             echo '<pre>';
-            if (is_scalar($one)) {
+            if ($one and is_string($one)) {
                 echo htmlspecialchars($one);
             } else {
                 var_export($one);
