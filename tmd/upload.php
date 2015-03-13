@@ -5,7 +5,7 @@ namespace tmd;
 class upload {
 
     public $allExt = array('jpg','gif','png');
-    public $maxSize = 1048576;
+    public $maxSize = 1048576; // 1024*1024 = 1M
 
     public $rootPath = './upload';
     public $savePath = '';

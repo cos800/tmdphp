@@ -8,11 +8,11 @@ class app
     static function run()
     {
         date_default_timezone_set('PRC');
-        static::sessionStart();
+        self::sessionStart();
 //        static::loadLib('_common');
 
-        $ctrObj = static::newClass();
-        $ret = static::callMethod($ctrObj);
+        $ctrObj = self::newClass();
+        $ret = self::callMethod($ctrObj);
 
         if (is_null($ret)) {
             return;
@@ -71,6 +71,12 @@ class app
         return $result;
     }
 
+    /**
+     * @param $method 为NULL则返回当前method，为空字符串则不设置（默认index）
+     * @param null $namespace
+     * @param null $append
+     * @return string 返回URL
+     */
     static function url($method=NULL, $namespace=NULL, $append=NULL)
     {
         $url = '?';
