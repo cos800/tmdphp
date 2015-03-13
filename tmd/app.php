@@ -5,6 +5,8 @@ namespace tmd;
 
 class app
 {
+    static $method = 'index';
+
     static function run()
     {
         date_default_timezone_set('PRC');
@@ -57,15 +59,17 @@ class app
             $param = array();
         } else {
             $param = explode('/', $_GET['m']);
-            $method = array_shift($param);
+            $method = self::$method = array_shift($param);
 
             preg_match('~^[a-z0-9]+$~i', $method) or trigger_error('url:m', E_USER_ERROR);
         }
+
         if (input::isPost()){
             $method .= '_post';
         }else{
             $method .= '_get';
         }
+
         $result = call_user_func_array(array($ctrObj, $method), $param);
 
         return $result;

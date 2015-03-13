@@ -17,7 +17,7 @@ class input
 
     static function txt($key)
     {
-        return nl2br(htmlspecialchars(rtrim(static::val($key))));
+        return htmlspecialchars(rtrim(static::val($key)));
     }
 
     static function int($key)
