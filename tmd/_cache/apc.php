@@ -1,9 +1,9 @@
 <?php
 
-namespace TMD\Cache;
+namespace tmd\cache;
 
 
-class Apc extends _cache {
+class apc extends _cache {
     function set($name, $data, $expire=null) {
         return apc_store($this->prefix.$name, $data, is_null($expire) ? $this->expire : $expire);
     }

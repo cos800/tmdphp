@@ -126,6 +126,6 @@ class app
     {
         session_start();
     }
-    
+
 }
 

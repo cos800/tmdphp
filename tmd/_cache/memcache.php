@@ -1,10 +1,10 @@
 <?php
 
-namespace TMD\Cache;
+namespace tmd\cache;
 
 
 
-class Memcache extends _cache {
+class memcache extends _cache {
     public $_mamcache;
     public $host;
     public $port;

@@ -1,11 +1,11 @@
 <?php
 
-namespace TMD\Cache;
+namespace tmd\cache;
 
 
-class File extends _cache {
-    public $dir = './app/storage/cache/';
-    public $suffix = '.cache.php';
+class file extends _cache {
+    public $dir = './app/_cache/';
+    public $suffix = '.php';
 
     function set($name, $data, $expire=null, $original=false) {
         $name = $this->_filename($name);
@@ -55,9 +55,9 @@ class File extends _cache {
 
     function inc($name, $step=1) {
         $data = $this->get($name, true);
-        if (!is_int($data['data']) and !is_float($data['data'])) {
-            return false;
-        }
+//        if (!is_int($data['data']) and !is_float($data['data'])) {
+//            return false;
+//        }
         $data['data'] += $step;
         $this->set($name, $data, null, true);
         return $data['data'];

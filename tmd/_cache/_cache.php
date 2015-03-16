@@ -1,6 +1,6 @@
 <?php
 
-namespace TMD\Cache;
+namespace tmd\cache;
 
 
 abstract class _cache {
