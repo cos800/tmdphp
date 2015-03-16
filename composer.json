@@ -12,7 +12,9 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "filp/whoops": "~1.1"
+    },
     "autoload": {
         "psr-4": {
             "tmd\\": "tmd/"
