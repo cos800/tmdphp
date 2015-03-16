@@ -126,13 +126,6 @@ class app
     {
         session_start();
     }
-
-    static function debug()
-    {
-        error_reporting ( E_ALL  ^  E_NOTICE );
-        $whoops = new \Whoops\Run;
-        $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-        $whoops->register();
-    }
+    
 }
 
