@@ -12,18 +12,23 @@ class input
 
     static function str($key)
     {
-        return htmlspecialchars(trim(static::val($key)));
+        return htmlspecialchars(trim(self::val($key)));
     }
 
     static function txt($key)
     {
-        return htmlspecialchars(rtrim(static::val($key)));
+        return htmlspecialchars(rtrim(self::val($key)));
     }
 
     static function int($key)
     {
-        $val = (int)static::val($key);
+        $val = (int)self::val($key);
         return max(0, $val);
+    }
+
+    static function time($key)
+    {
+        return strtotime(self::val($key)) ?: time();
     }
 
     static function isAjax()

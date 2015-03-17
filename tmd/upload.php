@@ -7,7 +7,7 @@ class upload {
     public $allExt = array('jpg','gif','png');
     public $maxSize = 1048576; // 1024*1024 = 1M
 
-    public $rootPath = './upload';
+    public $rootPath = './upload/';
     public $savePath = '';
     public $saveName = '';
 
@@ -65,13 +65,13 @@ class upload {
         }
 
         // 创建目录
-        $tmp = $this->rootPath.'/'.$savePath;
+        $tmp = $this->rootPath.$savePath;
         if (!is_dir($tmp)) {
             mkdir($tmp, 0777, true);
         }
 
         // 绝对路径
-        $file['path_abs'] = $this->rootPath.'/'.$savePath.'/'.$saveName.'.'.$ext;
+        $file['path_abs'] = $this->rootPath.$savePath.'/'.$saveName.'.'.$ext;
         // 移动文件
         if (!move_uploaded_file($file['tmp_name'], $file['path_abs'])) {
             $file['error_msg'] = '服务器错误(文件移动失败)';
