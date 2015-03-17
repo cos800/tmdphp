@@ -5,26 +5,19 @@ namespace tmd;
 
 class app
 {
+
     static $method = 'index';
+
 
     static function run()
     {
         date_default_timezone_set('PRC');
         self::sessionStart();
-//        static::loadLib('_common');
 
-        $ctrObj = self::newClass();
-        $ret = self::callMethod($ctrObj);
-
-        if (is_null($ret)) {
-            return;
-        } elseif (is_scalar($ret)) { // 标量 包含了 integer 、 float 、 string 或 boolean 的变量
-            echo $ret;
-        } else { // is_array($ret) or is_object($ret)
-            echo json_encode($ret);
-        }
+        self::runApp();
     }
-    static function newClass()
+
+    private static function getClass()
     {
         // namespace
         if (empty($_GET['n'])) {
@@ -44,23 +37,19 @@ class app
             preg_match('~^[a-z0-9]+$~i', $_GET['c']) or trigger_error('url:c', E_USER_ERROR);
             $class = $_GET['c'];
         }
-        $class .= 'Controller';
 
-        $classPath = '\\app\\'.$namespace.'\\'.$class;
-        $ctrObj = new $classPath;
-
-        return $ctrObj;
+        $classPath = '\\app\\'.$namespace.'\\'.$class.'Controller';
+        return $classPath;
     }
 
-    static function callMethod($ctrObj)
-    {
+    private static function getMethod() {
         if (empty($_GET['m'])) {
             $method = 'index';
             $param = array();
         } else {
             $param = explode('/', $_GET['m']);
-            $method = self::$method = array_shift($param);
 
+            $method = self::$method = array_shift($param);
             preg_match('~^[a-z0-9]+$~i', $method) or trigger_error('url:m', E_USER_ERROR);
         }
 
@@ -70,9 +59,24 @@ class app
             $method .= '_get';
         }
 
+        return array($method, $param);
+    }
+
+    private static function runApp()
+    {
+        $ctrName = self::getClass();
+        list($method, $param) = self::getMethod();
+
+        $ctrObj = new $ctrName;
         $result = call_user_func_array(array($ctrObj, $method), $param);
 
-        return $result;
+        if (is_null($result)) {
+            return;
+        } elseif (is_scalar($result)) { // 标量 包含了 integer 、 float 、 string 或 boolean 的变量
+            echo $result;
+        } else { // is_array($ret) or is_object($ret)
+            echo json_encode($result);
+        }
     }
 
     /**
