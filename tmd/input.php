@@ -31,6 +31,32 @@ class input
         return strtotime(self::val($key)) ?: time();
     }
 
+    static function all($keys)
+    {
+        $keys = arr::explode($keys);
+        $data = array();
+        foreach ($keys as $k) {
+            $key = substr($k, 1);
+            switch ($k[0]) {
+                case '+':
+                    $data[$key] = self::int($key);
+                    break;
+                case '~':
+                    $data[$key] = self::val($key);
+                    break;
+                case '*':
+                    $data[$key] = self::txt($key);
+                    break;
+                case '@':
+                    $data[$key] = self::time($key);
+                    break;
+                default:
+                    $data[$k] = self::str($k);
+            }
+        }
+        return $data;
+    }
+
     static function isAjax()
     {
         return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) and strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])==='xmlhttprequest');

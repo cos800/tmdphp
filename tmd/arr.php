@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 14-11-21
- * Time: 下午5:05
- */
 
 namespace tmd;
 
