@@ -35,4 +35,19 @@ class arr {
         }
         return $unique ? array_unique($list) : $list;
     }
+
+    /**
+     * 表格型二维数组 转为 键值对型一维数组
+     * @param array $a 二维数组
+     * @return array 一维数组
+     */
+    static function table2array($a)
+    {
+        $dat = [];
+        foreach ($a as $b) {
+            list($k, $v) = array_values($b);
+            $dat[$k] = $v;
+        }
+        return $dat;
+    }
 }
