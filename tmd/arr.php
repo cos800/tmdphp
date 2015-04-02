@@ -7,6 +7,9 @@ class arr {
     // 连接成字符串
     static function implode($arr, $sep=',')
     {
+        if (empty($arr)) {
+            return '';
+        }
         return implode($sep, array_filter(array_map('trim', $arr)));
     }
 
@@ -45,3 +48,4 @@ class arr {
         return $dat;
     }
 }
+
