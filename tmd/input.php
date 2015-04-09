@@ -31,6 +31,11 @@ class input
         return strtotime(self::val($key)) ?: time();
     }
 
+    static function arr($key)
+    {
+        return htmlspecialchars(arr::implode(self::val($key)));
+    }
+
     static function all($keys)
     {
         $keys = arr::explode($keys);
@@ -49,6 +54,9 @@ class input
                     break;
                 case '@':
                     $data[$key] = self::time($key);
+                    break;
+                case '#':
+                    $data[$key] = self::arr($key);
                     break;
                 default:
                     $data[$k] = self::str($k);

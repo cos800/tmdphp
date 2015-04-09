@@ -10,7 +10,7 @@ class arr {
         if (empty($arr)) {
             return '';
         }
-        return implode($sep, array_filter(array_map('trim', $arr)));
+        return implode($sep, array_filter(array_map('trim', (array)$arr)));
     }
 
     // 分割为数组
