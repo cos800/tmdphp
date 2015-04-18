@@ -40,4 +40,25 @@ class code {
         return base64_decode(strtr($str, '-*!', '+/='));
     }
 
+    static function randNum($len=4)
+    {
+        $ret = '';
+        for ($i=0; $i<$len; $i++) {
+            $ret .= mt_rand(0, 9);
+        }
+        return $ret;
+    }
+
+    static function randStr($len=4)
+    {
+        $allStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $maxPos = strlen($allStr)-1;
+        $ret = '';
+        for($i=1; $i<=$len; $i++){
+            $pos = mt_rand(0, $maxPos);
+            $ret .= $allStr{$pos};
+        }
+        return $ret;
+    }
+
 }

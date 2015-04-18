@@ -71,9 +71,9 @@ class alipay {
             return false;
         }
 
-//        if ($adv) {
-//
-//        }
+        if ($adv) {
+            // todo
+        }
 
         return $data;
     }
