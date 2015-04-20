@@ -28,7 +28,7 @@ class weimiSms {
             $post['p'.$i++] = $p;
         }
 
-        $rst = curl::requestJson("http://api.xxxweimi.cc/2/sms/send.html", flase, $post);
+        $rst = curl::requestJson("http://api.weimi.cc/2/sms/send.html", flase, $post);
         if ($rst['code']<0) {
             throw new \Exception($rst['msg']);
         }
