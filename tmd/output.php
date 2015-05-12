@@ -38,7 +38,7 @@ class output {
         if ($ajax) {
             $ext['ok'] = false;
             $ext['msg'] = $msg;
-            exit(json_encode($ext));
+            exit(json_encode($ext, JSON_UNESCAPED_UNICODE));
         }
 
         $url = is_string($ext) ? $ext : 'javascript:history.back();';
@@ -61,7 +61,7 @@ class output {
         if ($ajax) {
             $ext['ok'] = true;
             $ext['url'] = $url;
-            exit(json_encode($ext));
+            exit(json_encode($ext, JSON_UNESCAPED_UNICODE));
         }
 
         $url = empty($url) ? 'javascript:location=document.referrer;' : $url;

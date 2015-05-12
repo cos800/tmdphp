@@ -75,7 +75,7 @@ class app
         } elseif (is_scalar($result)) { // 标量 包含了 integer 、 float 、 string 或 boolean 的变量
             echo $result;
         } else { // is_array($ret) or is_object($ret)
-            echo json_encode($result);
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
         }
     }
 
