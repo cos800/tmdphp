@@ -160,7 +160,7 @@ class db {
 
                 if (!strpos($key, ':')) { // 默认为 = 比较
                     $val = $this->PDO->quote($val);
-                    $sql[] = "$key=$val";
+                    $sql[] = "`$key`=$val";
                     continue;
                 }
 
@@ -183,7 +183,7 @@ class db {
         }else{
             $val = $this->PDO->quote($val);
         }
-        return "$key $oper $val";
+        return "`$key` $oper $val";
     }
 
     function table($table, $prefix=null) {
