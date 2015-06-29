@@ -138,12 +138,12 @@ class db {
         return $makeSql ? $sql : $this->exec($sql.' LIMIT 1');
     }
 
-    function where($whe, $pre='WHERE ') {
+    function where($whe, $pre=' WHERE ') {
         if (empty($whe)) {
             return '';
         } elseif (is_string($whe)) {
             $sql = $whe;
-        }elseif(is_array($whe)) {
+        } elseif (is_array($whe)) {
             if (isset($whe['||'])) { // 判断条件之间的关系
                 $logic = ' OR ';
                 unset($whe['||']);
