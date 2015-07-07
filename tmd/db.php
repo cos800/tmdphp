@@ -103,6 +103,15 @@ class db {
         return $this->PDO->exec($sql);
     }
 
+    function selectOne($table, $fields, $whe)
+    {
+        if (is_array($fields)) {
+            $fields = '`' . implode('`, `', $fields) . '`';
+        }
+        $sql = "SELECT $fields FROM " . $this->table($table) . $this->where($whe);
+        return $this->getOne($sql);
+    }
+
     function insert($table, $data, $makeSql=false) {
         $keys = implode('`,`', array_keys($data));
         $vals = implode(',', array_map(array($this->PDO, 'quote'), $data));
@@ -118,8 +127,8 @@ class db {
     function update($table, $data, $whe, $makeSql=false) {
         $sets = array();
         foreach ($data as $key=>$val) {
-            if (is_array($val)) {
-                $val = $val[0];
+            if (is_array($val)) { // 执行原生SQL
+                $val = $val[0]; // 'views' => ['views+1']
             } else {
                 $val = $this->PDO->quote($val);
             }
@@ -128,13 +137,12 @@ class db {
         $sets = implode(',', $sets);
         $table = $this->table($table);
 
-        $sql = "UPDATE $table SET $sets " . $this->where($whe);
+        $sql = "UPDATE $table SET $sets" . $this->where($whe);
         return $makeSql ? $sql : $this->exec($sql.' LIMIT 1');
     }
 
     function delete($table, $whe, $makeSql=false) {
-        $table = $this->table($table);
-        $sql = "DELETE FROM $table " . $this->where($whe);
+        $sql = "DELETE FROM " . $this->table($table) . $this->where($whe);
         return $makeSql ? $sql : $this->exec($sql.' LIMIT 1');
     }
 
@@ -144,11 +152,11 @@ class db {
         } elseif (is_string($whe)) {
             $sql = $whe;
         }elseif(is_array($whe)) {
-            if (isset($whe['||'])) { // 判断条件之间的关系
-                $logic = ' OR ';
-                unset($whe['||']);
-            }else{
+            if (empty($whe['__OR__'])) { // 判断条件之间的关系
                 $logic = ' AND ';
+            }else{
+                $logic = ' OR ';
+                unset($whe['__OR__']);
             }
 
             $sql = array();
@@ -158,14 +166,14 @@ class db {
                     continue;
                 }
 
-                if (!strpos($key, ':')) { // 默认为 = 比较
-                    $val = $this->PDO->quote($val);
-                    $sql[] = "`$key`=$val";
+                if (strpos($key, ':')) {// 其他比较
+                    $sql[] = $this->_whereParse($key, $val);
                     continue;
                 }
 
-                // 其他比较
-                $sql[] = $this->_whereParse($key, $val);
+                 // 默认为 = 比较
+                $val = $this->PDO->quote($val);
+                $sql[] = "`$key`=$val";
             }
             $sql = implode($logic, $sql);
         }
@@ -186,41 +194,42 @@ class db {
         return "`$key` $oper $val";
     }
 
-    function table($table, $prefix=null) {
-        if (is_null($prefix)) { // 使用默认表前缀
-            $prefix = $this->prefix;
-        }
+    function table($table, $as='') {
+//        if (is_null($prefix)) { // 使用默认表前缀
+//            $prefix = $this->prefix;
+//        }
         if (strpos($table, '.')) { // 如果有点 说明是跨库的表
             $tmp = explode('.', $table);
             $db = '`'.trim($tmp[0]).'`.';
             $table = trim(array_pop($tmp));
         } else {
             $db = '';
-            $table = trim($table);
+            $table = $this->prefix . trim($table);
         }
 
-        if (strpos($table, ' ')) { // 如果有空格 说明用到了别名
-            $tmp = explode(' ', $table);
-            $table = $tmp[0];
-            $as = ' AS `'. array_pop($tmp) .'`';
-        } else {
-            $as = '';
-        }
-        return "$db`$prefix$table`$as";
+//        if (strpos($table, ' ')) { // 如果有空格 说明用到了别名
+//            $tmp = explode(' ', $table);
+//            $table = $tmp[0];
+//            $as = ' AS `'. array_pop($tmp) .'`';
+//        } else {
+//            $as = '';
+//        }
 
-        // 可以处理以下各种情况
-        // table
-        // table as tbl
-        // table tbl
-        // db2.table
-        // db2.table as tbl
-        // db2.table tbl
+        if ($as) {
+            $as = " AS `$as`";
+        }
+
+        return "$db`$table`$as";
     }
 
     function lastSql($ret=false) {
         $i = count($this->sqls)-1;
         $sql = $this->sqls[$i];
-        echo htmlspecialchars($sql);
+        if ($ret) {
+            return $sql;
+        }else{
+            echo htmlspecialchars($sql);
+        }
     }
 
 }
