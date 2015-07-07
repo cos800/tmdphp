@@ -146,13 +146,21 @@ class db {
         return $makeSql ? $sql : $this->exec($sql.' LIMIT 1');
     }
 
-    function where($whe, $pre='WHERE ') {
+    function where($whe, $pre=' WHERE ') {
         if (empty($whe)) {
             return '';
         } elseif (is_string($whe)) {
             $sql = $whe;
+<<<<<<< HEAD
         }elseif(is_array($whe)) {
             if (empty($whe['__OR__'])) { // 判断条件之间的关系
+=======
+        } elseif (is_array($whe)) {
+            if (isset($whe['||'])) { // 判断条件之间的关系
+                $logic = ' OR ';
+                unset($whe['||']);
+            }else{
+>>>>>>> 140d3aa25f35a928aa0e99bf9b641f7bfe800491
                 $logic = ' AND ';
             }else{
                 $logic = ' OR ';
