@@ -32,6 +32,6 @@ class weimiSms {
         if ($rst['code']<0) {
             throw new \Exception($rst['msg']);
         }
-        return true;
+        return $rst;
     }
 }
