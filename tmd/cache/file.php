@@ -4,7 +4,7 @@ namespace tmd\cache;
 
 
 class file extends _cache {
-    public $dir = './app/_cache/';
+    public $dir = './app/_temp/cache/';
     public $suffix = '.php';
 
     function set($name, $data, $expire=null, $original=false) {
