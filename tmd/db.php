@@ -30,6 +30,8 @@ class db {
 
     public $sqls = array();
 
+    private static $_instance;
+
     function __construct($config=array()) {
         if (is_string($config)) {
             $this->dsn = $config;
@@ -43,7 +45,11 @@ class db {
             }
         }
         $this->PDO = new \PDO($this->dsn, $this->user, $this->pwd, $this->options);
+        self::$_instance = $this;
+    }
 
+    static function getInstance() {
+        return self::$_instance;
     }
 
     function query($sql, $args=array()) {
@@ -167,13 +173,18 @@ class db {
                 }
 
                 if (strpos($key, ':')) {// 其他比较
-                    $sql[] = $this->_whereParse($key, $val);
+                    $tmp = $this->_whereParse($key, $val);
+                    if ($tmp) {
+                        $sql[] = $tmp;
+                    }else{
+                        $sql[] = $logic==' OR ' ? 1 : 0;
+                    }
                     continue;
                 }
 
                  // 默认为 = 比较
                 $val = $this->PDO->quote($val);
-                $sql[] = "`$key`=$val";
+                $sql[] = "`$key` = $val";
             }
             $sql = implode($logic, $sql);
         }
@@ -181,11 +192,11 @@ class db {
         return $pre.$sql;
     }
 
-    function _whereParse($key, $val) {
+    private function _whereParse($key, $val) {
         list($key, $oper) = explode(':', $key);
         $oper = strtoupper(trim($oper));
         if (is_array($val)) {
-            if (empty($val)) return '0';
+            if (empty($val)) return '';
             $val = array_map(array($this->PDO, 'quote'), $val);
             $val = '('.implode(',',$val).')';
         }else{
@@ -195,25 +206,15 @@ class db {
     }
 
     function table($table, $as='') {
-//        if (is_null($prefix)) { // 使用默认表前缀
-//            $prefix = $this->prefix;
-//        }
-        if (strpos($table, '.')) { // 如果有点 说明是跨库的表
-            $tmp = explode('.', $table);
-            $db = '`'.trim($tmp[0]).'`.';
-            $table = trim(array_pop($tmp));
+        if (strpos($table, '.')!==false) { // 如果有“.” 说明是跨库的表 不加前缀, 或者直接以“.”开头, 说明是当前库的表 强制不加前缀
+            list($db, $table) = explode('.', $table);
+            if ($db) {
+                $db = "`$db`.";
+            }
         } else {
             $db = '';
             $table = $this->prefix . trim($table);
         }
-
-//        if (strpos($table, ' ')) { // 如果有空格 说明用到了别名
-//            $tmp = explode(' ', $table);
-//            $table = $tmp[0];
-//            $as = ' AS `'. array_pop($tmp) .'`';
-//        } else {
-//            $as = '';
-//        }
 
         if ($as) {
             $as = " AS `$as`";
